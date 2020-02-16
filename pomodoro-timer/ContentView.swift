@@ -12,10 +12,10 @@ struct ContentView: View {
     @State var timer: Timer?
     @State var count: TimeInterval = 0.0 {
         didSet {
-            self.isRestTime = {
-                if case 0...5 = Int(count) / 60 % 60 % 25 {
+            self.isWorkTime = {
+                if case 0...24 = Int(count) / 60 % 60 % 30 {
                     // TODO: for Debug
-                    // if case 0...5 = Int(count) % 60 % 25 {
+                    // if case 0...24 = Int(count) % 60 % 30 {
                     return true
                 }
                 return false
@@ -31,19 +31,20 @@ struct ContentView: View {
         return formatter.string(from: count)!
     }
     
-    @State var isRestTime: Bool = false
+    @State var isWorkTime: Bool = false
     
     var body: some View {
         ZStack {
-            if $isRestTime.wrappedValue {
-                Color.yellow.edgesIgnoringSafeArea(.all)
-            } else {
+            if $isWorkTime.wrappedValue {
                 Color.green.edgesIgnoringSafeArea(.all)
+            } else {
+                Color.white.edgesIgnoringSafeArea(.all)
             }
             VStack {
                 Text(timeCount)
                 // TODO: for Debug
-                // Text("\(Int(count) % 60 % 5)")
+                // Text("\(Int(count) % 60 % 30)")
+                 Text("\(Int(count) / 60 % 60 % 30)")
                 HStack {
                     Button("start") {
                         self.timer?.invalidate()
