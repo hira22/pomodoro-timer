@@ -31,35 +31,72 @@ struct ContentView: View {
         return formatter.string(from: count)!
     }
     
-    @State var isWorkTime: Bool = false
+    @State var isWorkTime: Bool = true
     
     var body: some View {
         ZStack {
             if $isWorkTime.wrappedValue {
-                Color.green.edgesIgnoringSafeArea(.all)
+                Color.black.edgesIgnoringSafeArea(.all)
             } else {
                 Color.white.edgesIgnoringSafeArea(.all)
             }
-            VStack {
-                Text(timeCount)
+            VStack(alignment: .center, spacing: 150.0) {
+                Spacer()
+                // COUNTER
+                ZStack {
+                    Rectangle()
+                        .frame(height: 48.0)
+                        .foregroundColor(.white)
+                        .cornerRadius(12, antialiased:  true)
+                    Text(timeCount)
+                        .foregroundColor(.gray)
+                        .font(.title)
+                        .fontWeight(.medium)
+                        .padding(.vertical, 8.0)
+                        .padding(.horizontal, 32.0)
+                }
                 // TODO: for Debug
                 // Text("\(Int(count) % 60 % 30)")
-                 Text("\(Int(count) / 60 % 60 % 30)")
-                HStack {
-                    Button("start") {
-                        self.timer?.invalidate()
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { timer in
-                            self.count += timer.timeInterval
-                        })
+                
+                Spacer()
+//                HStack(alignment: .center, spacing: 100.0) {
+                    
+                if count < 1 {
+                        
+                        // START
+                        Button(
+                            action: { self.timer?.invalidate()
+                                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0,
+                                                                  repeats: true) { timer in
+                                                                    self.count += timer.timeInterval } },
+                            label: { Text("START").foregroundColor(.white).padding(.vertical, 8.0) }
+                        ).background(
+                            Rectangle()
+                                .frame(width: 100.0, height: 100.0)
+                                .foregroundColor(.green)
+                                .cornerRadius(50, antialiased:  true)
+                        )
+                    } else {
+                        
+                        //RE-START
+                        Button(
+                            action: {
+                                self.timer?.invalidate()
+                                self.$count.wrappedValue = 0.0
+                                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0,
+                                                                  repeats: true) { timer in
+                                                                    self.count += timer.timeInterval } },
+                            label: { Text("RESTART").foregroundColor(.white).padding(.vertical, 8.0)}
+                        ).background(
+                            Rectangle()
+                                .frame(width: 100.0, height: 100.0)
+                                .foregroundColor(.red)
+                                .cornerRadius(50, antialiased:  true)
+                        )
                     }
-                    Button("reset") {
-                        self.timer?.invalidate()
-                        self.$count.wrappedValue = 0.0
-                        self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { timer in
-                            self.count += timer.timeInterval
-                        })
-                    }
-                }
+                    
+//                }
+                Spacer()
             }
         }
     }
