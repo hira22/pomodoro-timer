@@ -9,8 +9,36 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var timer: Timer?
+    @State var count: TimeInterval = 0.0
+    
+    var timeCount: String {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .positional
+        formatter.allowedUnits = [ .hour, .minute, .second ]
+        formatter.zeroFormattingBehavior = [ .pad ]
+        return formatter.string(from: count)!
+    }
+    
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            Text(timeCount)
+            HStack {
+                Button("start") {
+                    self.timer?.invalidate()
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { timer in
+                        self.count += timer.timeInterval
+                    })
+                }
+                Button("reset") {
+                    self.timer?.invalidate()
+                    self.$count.wrappedValue = 0.0
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { timer in
+                        self.count += timer.timeInterval
+                    })
+                }
+            }
+        }
     }
 }
 
