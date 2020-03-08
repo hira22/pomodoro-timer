@@ -7,98 +7,73 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
-    @State var timer: Timer?
-    @State var count: TimeInterval = 0.0 {
-        didSet {
-            self.isWorkTime = {
-                if case 0...24 = Int(count) / 60 % 60 % 30 {
-                    // TODO: for Debug
-                    // if case 0...24 = Int(count) % 60 % 30 {
-                    return true
-                }
-                return false
-            }()
+    @State private var timer: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .common)
+    @State private var count: TimeInterval = 0.0
+    @State private var cancellable: Cancellable?
+    
+    var body: some View {
+        ZStack {
+            backgroundView
+            VStack(alignment: .center, spacing: 200.0) {
+                pomodoroCounterView
+                    .padding(.vertical, 8.0)
+                    .padding(.horizontal, 32.0)
+                startButton
+            }
+            
+        // Is this correct? 🤔
+        }.onReceive(timer) { _ in
+            self.count += 1.0
         }
     }
+}
+
+private extension ContentView {
     
-    var timeCount: String {
+    var isInWorkTime: Bool {
+        if case 0...24 = Int(count) / 60 % 60 % 30 {
+        // for Debug
+//        if case 0...24 = Int(count) % 60 % 30 {
+            return true
+        }
+        return false
+    }
+    
+    var backgroundView: some View {
+        isInWorkTime ? Color.black.edgesIgnoringSafeArea(.all) : Color.white.edgesIgnoringSafeArea(.all)
+    }
+    
+    var pomodoroCounterView: some View {
+        
         let formatter = DateComponentsFormatter()
         formatter.unitsStyle = .positional
         formatter.allowedUnits = [ .hour, .minute, .second ]
         formatter.zeroFormattingBehavior = [ .pad ]
-        return formatter.string(from: count)!
+        
+        return Text(formatter.string(from: count)!)
+            .foregroundColor(isInWorkTime ? .white : .gray)
+            .font(.title)
+            .fontWeight(.medium)
     }
     
-    @State var isWorkTime: Bool = true
-    
-    var body: some View {
-        ZStack {
-            if $isWorkTime.wrappedValue {
-                Color.black.edgesIgnoringSafeArea(.all)
-            } else {
-                Color.white.edgesIgnoringSafeArea(.all)
-            }
-            VStack(alignment: .center, spacing: 150.0) {
-                Spacer()
-                // COUNTER
-                ZStack {
-                    Rectangle()
-                        .frame(height: 48.0)
-                        .foregroundColor(.white)
-                        .cornerRadius(12, antialiased:  true)
-                    Text(timeCount)
-                        .foregroundColor(.gray)
-                        .font(.title)
-                        .fontWeight(.medium)
-                        .padding(.vertical, 8.0)
-                        .padding(.horizontal, 32.0)
-                }
-                // TODO: for Debug
-                // Text("\(Int(count) % 60 % 30)")
-                
-                Spacer()
-//                HStack(alignment: .center, spacing: 100.0) {
-                    
-                if count < 1 {
-                        
-                        // START
-                        Button(
-                            action: { self.timer?.invalidate()
-                                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0,
-                                                                  repeats: true) { timer in
-                                                                    self.count += timer.timeInterval } },
-                            label: { Text("START").foregroundColor(.white).padding(.vertical, 8.0) }
-                        ).background(
-                            Rectangle()
-                                .frame(width: 100.0, height: 100.0)
-                                .foregroundColor(.green)
-                                .cornerRadius(50, antialiased:  true)
-                        )
-                    } else {
-                        
-                        //RE-START
-                        Button(
-                            action: {
-                                self.timer?.invalidate()
-                                self.$count.wrappedValue = 0.0
-                                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0,
-                                                                  repeats: true) { timer in
-                                                                    self.count += timer.timeInterval } },
-                            label: { Text("RESTART").foregroundColor(.white).padding(.vertical, 8.0)}
-                        ).background(
-                            Rectangle()
-                                .frame(width: 100.0, height: 100.0)
-                                .foregroundColor(.red)
-                                .cornerRadius(50, antialiased:  true)
-                        )
-                    }
-                    
-//                }
-                Spacer()
-            }
-        }
+    var startButton: some View {
+        let text: String = count < 1 ? "START": "RESTART"
+        let color: Color = count < 1 ? .green : .red
+        return Button(
+            action: {
+                // Is this correct? 🤔
+                self.cancellable?.cancel()
+                self.count = 0.0
+                self.timer = Timer.publish(every: 1, on: .main, in: .common)
+                self.cancellable = self.timer.connect() },
+            label: { Text(text).foregroundColor(.white) } )
+            .background(Rectangle()
+                .frame(width: 200.0, height: 80.0)
+                .foregroundColor(color)
+                .cornerRadius(40, antialiased:  true))
     }
 }
 
