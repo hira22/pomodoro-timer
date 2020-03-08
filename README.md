@@ -1,4 +1,4 @@
-# Pomodoro Timer with SwiftUI
+# Pomodoro Timer with SwiftUI and Combine
 
 |start|restart|break|
 |--|--|--|
