@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var timer: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .common)
     @State private var count: TimeInterval = 0.0
     @State private var cancellable: Cancellable?
+    @State private var isTimerStarting: Bool = false
     
     var body: some View {
         ZStack {
@@ -60,20 +61,23 @@ private extension ContentView {
     }
     
     var startButton: some View {
-        let text: String = count < 1 ? "START": "RESTART"
-        let color: Color = count < 1 ? .green : .red
+        let text: String = isTimerStarting ? "RESTART": "START"
+        let color: Color = isTimerStarting ? .red : .green
         return Button(
             action: {
                 // Is this correct? 🤔
                 self.cancellable?.cancel()
                 self.count = 0.0
                 self.timer = Timer.publish(every: 1, on: .main, in: .common)
-                self.cancellable = self.timer.connect() },
-            label: { Text(text).foregroundColor(.white) } )
-            .background(Rectangle()
-                .frame(width: 200.0, height: 80.0)
-                .foregroundColor(color)
-                .cornerRadius(40, antialiased:  true))
+                self.cancellable = self.timer.connect()
+                self.isTimerStarting = true },
+            label: {
+                Text(text)
+                    .frame(width: 200, height: 80)
+                    .foregroundColor(.white)
+                    .background(color)
+                    .cornerRadius(40) }
+        )
     }
 }
 
