@@ -26,7 +26,7 @@ struct ContentView: View {
             }
             
         // Is this correct? 🤔
-        }.onReceive(timer) { _ in
+        }.onReceive(timer) { (_: Date) in
             self.count += 1.0
         }
     }
@@ -36,8 +36,8 @@ private extension ContentView {
     
     var isInWorkTime: Bool {
         if case 0...24 = Int(count) / 60 % 60 % 30 {
-        // for Debug
-//        if case 0...24 = Int(count) % 60 % 30 {
+            // MARK: DEBUG
+            // if case 0...24 = Int(count) % 60 % 30 {
             return true
         }
         return false
@@ -61,8 +61,10 @@ private extension ContentView {
     }
     
     var startButton: some View {
+        
         let text: String = isTimerStarting ? "RESTART": "START"
         let color: Color = isTimerStarting ? .red : .green
+        
         return Button(
             action: {
                 // Is this correct? 🤔
