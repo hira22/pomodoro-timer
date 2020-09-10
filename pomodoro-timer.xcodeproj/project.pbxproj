@@ -17,6 +17,8 @@
 		B663E8FC250A4A2A00F9C46A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B663E8D1250A4A2A00F9C46A /* Assets.xcassets */; };
 		B663E90A250A4BA800F9C46A /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B663E909250A4BA800F9C46A /* PomodoroTimer.swift */; };
 		B663E90B250A4BA800F9C46A /* PomodoroTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B663E909250A4BA800F9C46A /* PomodoroTimer.swift */; };
+		B6D21DDF250A91880018F886 /* Timer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D21DDE250A91880018F886 /* Timer+Extensions.swift */; };
+		B6D21DE0250A91880018F886 /* Timer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D21DDE250A91880018F886 /* Timer+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,7 @@
 		B663E8F4250A4A2A00F9C46A /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		B663E8F6250A4A2A00F9C46A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B663E909250A4BA800F9C46A /* PomodoroTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroTimer.swift; sourceTree = "<group>"; };
+		B6D21DDE250A91880018F886 /* Timer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Timer+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,7 @@
 				B663E8CF250A4A2A00F9C46A /* PomodoroTimerApp.swift */,
 				B663E8D0250A4A2A00F9C46A /* ContentView.swift */,
 				B663E909250A4BA800F9C46A /* PomodoroTimer.swift */,
+				B6D21DDE250A91880018F886 /* Timer+Extensions.swift */,
 				B663E8D1250A4A2A00F9C46A /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -314,6 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B663E90A250A4BA800F9C46A /* PomodoroTimer.swift in Sources */,
+				B6D21DDF250A91880018F886 /* Timer+Extensions.swift in Sources */,
 				B663E8F9250A4A2A00F9C46A /* ContentView.swift in Sources */,
 				B663E8F7250A4A2A00F9C46A /* PomodoroTimerApp.swift in Sources */,
 			);
@@ -324,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B663E90B250A4BA800F9C46A /* PomodoroTimer.swift in Sources */,
+				B6D21DE0250A91880018F886 /* Timer+Extensions.swift in Sources */,
 				B663E8FA250A4A2A00F9C46A /* ContentView.swift in Sources */,
 				B663E8F8250A4A2A00F9C46A /* PomodoroTimerApp.swift in Sources */,
 			);

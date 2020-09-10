@@ -11,28 +11,21 @@ import Combine
 
 struct ContentView: View {
     
-    @ObservedObject var timer: PomodoroTimer = .init()
+    @ObservedObject private var timer: PomodoroTimer = .init()
     
     var body: some View {
         ZStack {
-            
             BackView(workTime: $timer.isInWorkTime)
             
             VStack(alignment: .center, spacing: 200.0) {
-                Counter(count: $timer.count, working: $timer.isInWorkTime)
+                CounterView(count: $timer.count, working: $timer.isInWorkTime)
                     .padding(.vertical, 8.0)
                     .padding(.horizontal, 32.0)
                 
                 Button(action: { timer.start() }) {
-                    Text(timer.starting ? "RESTART": "START")
-                        .frame(width: 200, height: 80)
-                        .foregroundColor(.white)
-                        .background(timer.starting ? Color.red : Color.green)
-                        .cornerRadius(40)
+                    ButtonText(starting: $timer.starting)
                 }
-                
             }
-            
         }
     }
 }
@@ -45,23 +38,27 @@ struct BackView: View {
     }
 }
 
-struct Counter: View {
-    let formatter: DateComponentsFormatter = {
-        let f = DateComponentsFormatter()
-        f.unitsStyle = .positional
-        f.allowedUnits = [ .hour, .minute, .second ]
-        f.zeroFormattingBehavior = [ .pad ]
-        return f
-    }()
-    
+struct CounterView: View {
     @Binding var count: TimeInterval
     @Binding var working: Bool
     
     var body: some View {
-        Text(formatter.string(from: count)!)
+        Text(Timer.formatter.string(from: count) ?? "00:00:00")
             .foregroundColor(working ? .white : .gray)
             .font(.title)
             .fontWeight(.medium)
+    }
+}
+
+struct ButtonText: View {
+    @Binding var starting: Bool
+    
+    var body: some View {
+        Text( starting ? "RESTART": "START")
+            .frame(width: 200, height: 80)
+            .foregroundColor(.white)
+            .background( starting ? Color.red : Color.green)
+            .cornerRadius(40)
     }
 }
 
@@ -70,4 +67,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-

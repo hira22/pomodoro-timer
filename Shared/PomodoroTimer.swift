@@ -12,34 +12,32 @@ import Combine
 class PomodoroTimer: ObservableObject {
     @Published var count: TimeInterval = 0.0
     @Published var starting: Bool = false
-    @Published var isInWorkTime: Bool = false
+    @Published var isInWorkTime: Bool = true
+    
+    private var timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .common)
     
     private var timerCancellable: AnyCancellable?
-    private var workTimeCancellable: AnyCancellable?
-    
-    private var startAt: Date!
-    
-    private var timerPublisher: Timer.TimerPublisher!
+    private var cancellables: Set<AnyCancellable> = []
     
     init() {
-        workTimeCancellable = $count
+        $count
             .map { (timeInterval: TimeInterval) -> Bool in
                 0...24 ~= Int(timeInterval) / 60 % 60 % 30
                 // MARK: DEBUG
-//                 0...24 ~= Int(timeInterval) % 60 % 30
+                // 0...24 ~= Int(timeInterval) % 60 % 30
             }
             .assign(to: \.isInWorkTime, on: self)
+            .store(in: &cancellables)
     }
     
     func start() {
         timerCancellable?.cancel()
-        startAt = Date()
-        starting = true
-        timerPublisher = Timer.publish(every: 1, on: .main, in: .common)
+        let startAt: Date = .init()
+        
         timerCancellable = timerPublisher
             .autoconnect()
             .map { (output: Timer.TimerPublisher.Output) -> TimeInterval in
-                output.timeIntervalSince(self.startAt)
+                output.timeIntervalSince(startAt)
             }
             .handleEvents(receiveSubscription: { (subscription: Subscription) in
                 print("subscription: \(subscription)")
