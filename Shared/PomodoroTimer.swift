@@ -16,8 +16,8 @@ class PomodoroTimer: ObservableObject {
     
     private var timerPublisher: Timer.TimerPublisher = Timer.publish(every: 1, on: .main, in: .common)
     
-    private var timerCancellable: AnyCancellable?
-    private var cancellables: Set<AnyCancellable> = []
+    private var timerSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
     
     init() {
         $count
@@ -27,15 +27,20 @@ class PomodoroTimer: ObservableObject {
                 // 0...24 ~= Int(timeInterval) % 60 % 30
             }
             .assign(to: \.isInWorkTime, on: self)
-            .store(in: &cancellables)
+            .store(in: &subscriptions)
+        
+        $count.map { (timeInterval: TimeInterval) -> Bool in
+            !timeInterval.isZero
+        }
+        .assign(to: \.starting, on: self)
+        .store(in: &subscriptions)
     }
     
     func start() {
-        timerCancellable?.cancel()
+        timerSubscription?.cancel()
         let startAt: Date = .init()
         
-        timerCancellable = timerPublisher
-            .autoconnect()
+        timerSubscription = timerPublisher
             .map { (output: Timer.TimerPublisher.Output) -> TimeInterval in
                 output.timeIntervalSince(startAt)
             }
@@ -51,6 +56,8 @@ class PomodoroTimer: ObservableObject {
                 print("request: \(demand)")
             })
             .assign(to: \.count, on: self)
+        
+        _ = timerPublisher.connect()
     }
     
 }
